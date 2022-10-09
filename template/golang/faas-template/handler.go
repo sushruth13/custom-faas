@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
+	nats "github.com/nats-io/nats.go"
 	handler "github.com/openfaas/templates-sdk/go-http"
 )
 
