@@ -31,3 +31,17 @@ functions:
       nats_url: nats://nats.openfaas:4222
     build_args:
       GO111MODULE: on
+  
+  faas-template:
+    lang: golang-http
+    handler: ./faas-template
+    image: openfaas/nats-receive-message:0.2.0
+    annotations:
+      topic: "nats-test"
+    environment:
+      wait: 10ms # set a wait, if you like for testing.
+      write_timeout: 35s
+      read_timeout: 35s
+      exec_timeout: 35s
+    build_args:
+      GO111MODULE: on
