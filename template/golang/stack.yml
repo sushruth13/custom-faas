@@ -43,5 +43,6 @@ functions:
       write_timeout: 35s
       read_timeout: 35s
       exec_timeout: 35s
+      nats_url: nats://nats.openfaas:4222
     build_args:
       GO111MODULE: on
