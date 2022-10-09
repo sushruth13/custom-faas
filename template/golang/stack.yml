@@ -35,7 +35,7 @@ functions:
   faas-template:
     lang: golang-http
     handler: ./faas-template
-    image: openfaas/nats-receive-message:0.2.0
+    image: faas-template:latest
     annotations:
       topic: "nats-test"
     environment:
