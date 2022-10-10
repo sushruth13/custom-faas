@@ -35,7 +35,7 @@ functions:
   faas-template:
     lang: golang-http
     handler: ./faas-template
-    image: faas-template:latest
+    image: sushruth13/faas-template:latest
     annotations:
       topic: "nats-test"
     environment:
