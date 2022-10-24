@@ -34,6 +34,8 @@ RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=${CGO_ENABLED} go test ./.
 
 WORKDIR /go/src/handler
 
+RUN go get
+
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} CGO_ENABLED=${CGO_ENABLED} \
     go build --ldflags "-s -w" -a -installsuffix cgo -o handler .
 
