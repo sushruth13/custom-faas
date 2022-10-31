@@ -2,6 +2,7 @@ package function
 
 import (
 	"fmt"
+	"json"
 	"log"
 	"net/http"
 	"os"
@@ -15,9 +16,20 @@ var (
 	defaultMessage = "Relay test"
 )
 
+type request struct {
+	Body string
+}
+
 // Handle a serverless request
-func Handle(req []byte) (handler.Response, error) {
-	// log.Printf("Received: %q", string(req.Body))
+func Handle(bytereq []byte) (handler.Response, error) {
+	var req request
+
+	err := json.Unmarshal(bytereq, &req)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Printf("Received: %q", string(req.Body))
 
 	// if val, ok := os.LookupEnv("wait"); ok && len(val) > 0 {
 	// 	parsedVal, _ := time.ParseDuration(val)
@@ -59,7 +71,7 @@ func Handle(req []byte) (handler.Response, error) {
 	}
 
 	return handler.Response{
-		Body:       []byte(fmt.Sprintf("Received")),
+		Body:       []byte(fmt.Sprintf("Received: %q", string(req.Body))),
 		StatusCode: http.StatusOK,
 	}, nil
 }
