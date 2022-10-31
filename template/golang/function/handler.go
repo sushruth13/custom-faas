@@ -25,9 +25,9 @@ func Handle(bytereq []byte) (handler.Response, error) {
 	var req request
 
 	err := json.Unmarshal(bytereq, &req)
-	if err != nil {
-		return nil, err
-	}
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	log.Printf("Received: %q", string(req.Body))
 
