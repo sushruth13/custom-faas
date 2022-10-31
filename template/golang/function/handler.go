@@ -16,8 +16,8 @@ var (
 )
 
 // Handle a serverless request
-func Handle(req handler.Request) (handler.Response, error) {
-	log.Printf("Received: %q", string(req.Body))
+func Handle(req []byte) (handler.Response, error) {
+	// log.Printf("Received: %q", string(req.Body))
 
 	// if val, ok := os.LookupEnv("wait"); ok && len(val) > 0 {
 	// 	parsedVal, _ := time.ParseDuration(val)
