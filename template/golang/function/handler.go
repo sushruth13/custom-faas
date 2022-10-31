@@ -1,8 +1,8 @@
 package function
 
 import (
+	"encoding/json"
 	"fmt"
-	"json"
 	"log"
 	"net/http"
 	"os"
