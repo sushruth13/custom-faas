@@ -59,7 +59,7 @@ func Handle(req []byte) (handler.Response, error) {
 	}
 
 	return handler.Response{
-		Body:       []byte(fmt.Sprintf("Received: %q", string(req.Body))),
+		Body:       []byte(fmt.Sprintf("Received")),
 		StatusCode: http.StatusOK,
 	}, nil
 }
