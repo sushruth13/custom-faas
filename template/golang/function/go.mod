@@ -1,11 +1,10 @@
 module handler/function
 
-
 go 1.18
 
 require (
-    github.com/nats-io/nats.go v1.16.0
-    github.com/openfaas/templates-sdk/go-http v0.0.0-20220408082716-5981c545cb03
+	github.com/nats-io/nats.go v1.16.0
+	github.com/openfaas/templates-sdk/go-http v0.0.0-20220408082716-5981c545cb03
 )
 
 require (
