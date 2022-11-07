@@ -1,7 +1,6 @@
 package function
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,65 +12,65 @@ import (
 
 var (
 	subject        = "nats-test"
-	defaultMessage = "Hello World"
+	defaultMessage = "ERROR_FN"
 )
 
 // Handle a serverless request
 func Handle(req handler.Request) (handler.Response, error) {
-	msg := defaultMessage
-	if len(req.Body) > 0 {
-		msg = string(bytes.TrimSpace(req.Body))
-	}
+	log.Printf("Processing input for %q", string(req.Body))
 
-	natsURL := nats.DefaultURL
-	val, ok := os.LookupEnv("nats_url")
-	if ok {
-		natsURL = val
-	}
+	if val, ok := os.LookupEnv("fn_name"); ok && len(val) > 0 {
+		if string(req.Body) == val {
+			// Correct function is being called
+			log.Printf("Running function code for %q", string(req.Body))
 
-	nc, err := nats.Connect(natsURL)
-	if err != nil {
-		errMsg := fmt.Sprintf("can not connect to nats: %s", err)
-		log.Printf(errMsg)
-		r := handler.Response{
-			Body:       []byte(errMsg),
-			StatusCode: http.StatusInternalServerError,
+			// Function code here
+
+			msg := defaultMessage
+
+			if val2, ok := os.LookupEnv("fn_to_call"); ok && len(val) > 0 {
+				msg = val2
+			}
+
+			// Lookup nats URL
+			natsURL := nats.DefaultURL
+			val, ok := os.LookupEnv("nats_url")
+			if ok {
+				natsURL = val
+			}
+
+			// Connect to nats
+			nc, err := nats.Connect(natsURL)
+			if err != nil {
+				errMsg := fmt.Sprintf("can not connect to nats: %s", err)
+				log.Printf(errMsg)
+				r := handler.Response{
+					Body:       []byte(errMsg),
+					StatusCode: http.StatusInternalServerError,
+				}
+				return r, err
+			}
+			defer nc.Close()
+
+			// Publish message to nats
+			log.Printf("Publishing %d bytes to: %q\n", len(msg), subject)
+
+			// Respond error if needed
+			err = nc.Publish(subject, []byte(msg))
+			if err != nil {
+				log.Println(err)
+
+				r := handler.Response{
+					Body:       []byte(fmt.Sprintf("can not publish to nats: %s", err)),
+					StatusCode: http.StatusInternalServerError,
+				}
+				return r, err
+			}
 		}
-		return r, err
-	}
-	defer nc.Close()
-
-	log.Printf("Publishing %d bytes to: %q\n", len(msg), subject)
-
-	err = nc.Publish(subject, []byte(msg))
-	if err != nil {
-		log.Println(err)
-
-		r := handler.Response{
-			Body:       []byte(fmt.Sprintf("can not publish to nats: %s", err)),
-			StatusCode: http.StatusInternalServerError,
-		}
-		return r, err
 	}
 
 	return handler.Response{
-		Body:       []byte(fmt.Sprintf("Published %d bytes to: %q", len(msg), subject)),
+		Body:       []byte(fmt.Sprintf("Successfully processed %q", string(req.Body))),
 		StatusCode: http.StatusOK,
 	}, nil
 }
-
-//Recieve
-// func Handle(req handler.Request) (handler.Response, error) {
-// 	log.Printf("Received: %q", string(req.Body))
-
-// 	if val, ok := os.LookupEnv("wait"); ok && len(val) > 0 {
-// 		parsedVal, _ := time.ParseDuration(val)
-// 		log.Printf("Waiting for %s before returning", parsedVal.String())
-// 		time.Sleep(parsedVal)
-// 	}
-
-// 	return handler.Response{
-// 		Body:       []byte(fmt.Sprintf("Received: %q", string(req.Body))),
-// 		StatusCode: http.StatusOK,
-// 	}, nil
-// }
