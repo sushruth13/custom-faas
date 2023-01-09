@@ -5,5 +5,6 @@ def handle(req):
     Args:
         req (str): request body
     """
-    requests.post("http://coordinator.default.svc.cluster.local:8080")
-    return req
+    outputStr="f1,"+"Start"
+    requests.post("http://172.22.85.31:30036",outputStr)
+    return "Sent request to the coordinator from f1"
